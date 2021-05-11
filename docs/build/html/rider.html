@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Rider &mdash; first_cycling_api 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> first_cycling_api
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="first_cycling_api.html">First Cycling API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first_cycling_api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">first_cycling_api</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Rider</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/rider.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-first_cycling_api.rider"></span><div class="section" id="rider">
+<h1>Rider<a class="headerlink" href="#rider" title="Permalink to this headline">¶</a></h1>
+<p>Provides a framework to load and store data on riders.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">first_cycling_api.rider.</span></span><span class="sig-name descname"><span class="pre">Rider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rider_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper class to load and store information on riders.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.ID">
+<span class="sig-name descname"><span class="pre">ID</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>The firstycling.com ID for the rider (can be found in the URL for their profile page).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.header_details">
+<span class="sig-name descname"><span class="pre">header_details</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.header_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary listing information from the header of rider profile pages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.sidebar_details">
+<span class="sig-name descname"><span class="pre">sidebar_details</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.sidebar_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>A series listing information from the right sidebar of rider profile pages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.years_active">
+<span class="sig-name descname"><span class="pre">years_active</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.years_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of the years in which the rider was active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.results">
+<span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>The rider’s results for each year.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict {int: RiderYearResults}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.race_history">
+<span class="sig-name descname"><span class="pre">race_history</span></span><a class="headerlink" href="#first_cycling_api.rider.Rider.race_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>The rider’s history at the race with the given ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict {int: RiderRaceHistory}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_best_results">
+<span class="sig-name descname"><span class="pre">get_best_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_best_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s best results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderBestResults</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_monument_results">
+<span class="sig-name descname"><span class="pre">get_monument_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_monument_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s results in monuments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderMonumentResults</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_one_day_races">
+<span class="sig-name descname"><span class="pre">get_one_day_races</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_one_day_races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s results at major one-day races.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderOneDayRaces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_race_history">
+<span class="sig-name descname"><span class="pre">get_race_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">race_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_race_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s history at a certain race.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>race_id</strong> (<em>int</em>) – The firstcycling.com ID for the desired race, from the race profile URL.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>RiderRaceHistory</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_stage_races">
+<span class="sig-name descname"><span class="pre">get_stage_races</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_stage_races" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s results at major stage races.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderStageRaces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_team_and_ranking">
+<span class="sig-name descname"><span class="pre">get_team_and_ranking</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_team_and_ranking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s historical teams and rankings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderTeamAndRanking</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_teams">
+<span class="sig-name descname"><span class="pre">get_teams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_teams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s historical teams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderTeams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_uci_victories">
+<span class="sig-name descname"><span class="pre">get_uci_victories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_uci_victories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s UCI victories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderVictories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_victories">
+<span class="sig-name descname"><span class="pre">get_victories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_victories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rider’s victories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RiderVictories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_year">
+<span class="sig-name descname"><span class="pre">get_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rider details and results for given year.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>year</strong> (<em>int</em>) – Year for which to collect information.
+If None, collects information for latest unloaded year in which rider was active,
+or if all years already loaded returns latest year.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>RiderYearResults</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="first_cycling_api.rider.Rider.get_years">
+<span class="sig-name descname"><span class="pre">get_years</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#first_cycling_api.rider.Rider.get_years" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rider details and results for given years.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>years</strong> (<em>list of int</em>) – List of years for which to collect information.
+If None, collects information for all years in which rider was active.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – Results for selected years.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict {int: RiderYearResults}</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><span class="xref std std-ref">index</span></p></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ethan Baron.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+.. automodule:: first_cycling_api.rider
+	:members: Rider
+
+Indices and tables
+==================
+
+* :ref:`index`
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

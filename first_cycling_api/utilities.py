@@ -1,3 +1,11 @@
+"""
+Utilities
+=========
+
+Provides useful classes, functions, and Enums.
+
+"""
+
 # Import packages ----
 
 import requests
@@ -13,15 +21,31 @@ from enum import Enum
 # Base classes ----
 
 class Endpoint:
-	base_url = None
-	params = {}
+	"""
+	A generalized class to handle endpoint requests and results.
+
+	Attributes
+	----------
+	url : str
+		The url for the actual request.
+	response : str
+		The raw response from the request.
+	"""
+	_base_url = None
+	_params = {}
 
 	def __init__(self, params):
-		self.params.update(params)
-		self.make_request(self.params)
+		""" Make endpoint request and load result.
+		Parameters
+		----------
+		params : dict
+			Parameters to be passed in request.
+		"""
+		self._params.update(params)
+		self._make_request(self._params)
 	
-	def make_request(self, parameters):
-		page = requests.get(self.base_url, params=parameters)
+	def _make_request(self, parameters):
+		page = requests.get(self._base_url, params=parameters)
 		self.url = page.url
 		self.response = page.text
 	
@@ -31,6 +55,7 @@ class Endpoint:
 		return d
 
 	def get_json(self):
+		""" Return JSON representation of endpoint request. """
 		return json.dumps(self, default=ComplexHandler)
 
 	def __repr__(self):
@@ -38,20 +63,39 @@ class Endpoint:
 
 
 class ParsedEndpoint(Endpoint):
+	"""
+	A generalized class extending Endpoint to also parse endpoint results.
+
+	Attributes
+	----------
+	url : str
+		The url for the actual request.
+	response : str
+		The text of the response page.
+	"""
 	def __init__(self, params):
 		super().__init__(params)
-		self.parse_result()
+		self._parse_result()
 
-	def parse_result(self):
+	def _parse_result(self):
 		self.soup = bs4.BeautifulSoup(self.response, 'html.parser')
-		self.parse_soup()
+		self._parse_soup()
 		del self.soup
 
-	def parse_soup(self):
+	def _parse_soup(self):
 		return
 
 
 class FirstCyclingObject:
+	"""
+	A generalized class to store FirstCycling.com objects.
+
+	Attributes
+	----------
+	ID : int
+		The firstcycling.com ID for the object.
+	"""
+
 	def __init__(self, ID):
 		self.ID = ID
 
@@ -59,6 +103,7 @@ class FirstCyclingObject:
 		return self.__class__.__name__ + '(' + str(self.ID) + ')'
 
 	def get_json(self):
+		""" Return JSON representation of object. """
 		return json.dumps(self, default=ComplexHandler)
 
 	def _to_json(self):
@@ -74,22 +119,25 @@ class FirstCyclingObject:
 
 	def _get_endpoint(self, endpoint, destination, destination_key=None, **kwargs):
 		""" Generalized method to load endpoints """
-		kwargs = self._prepare_endpoint_params(kwargs)
-		endpoint = endpoint(kwargs)
-		self._get_general_info(endpoint)
-		if destination_key:
-			getattr(self, destination)[destination_key] = endpoint
+		if destination_key and destination_key in getattr(self, destination):
+			return getattr(self, destination)[destination_key]
+		elif not destination_key and hasattr(self, destination):
+			return getattr(self, destination)
 		else:
-			setattr(self, destination, endpoint)
-		return endpoint
+			kwargs = self._prepare_endpoint_params(kwargs)
+			endpoint = endpoint(kwargs)
+			self._get_general_info(endpoint)
+			if destination_key:
+				getattr(self, destination)[destination_key] = endpoint
+			else:
+				setattr(self, destination, endpoint)
+			return endpoint
 
 
 # Global constants ----
 
 current_year = date.today().year
-
 colour_icons = ('green', 'red', 'yellow', 'pink', 'violet', 'blue', 'black', 'orange', 'lightblue', 'white', 'polka', 'maillotmon') # TODO Any more?
-
 uci_categories = ['2.2', '2.1', '2.HC', '2.WT1', '2.WT2', '2.WT3', '2.Pro', 'GT1', 'GT2', '1.2', '1.1', '1.HC', '1.WT1', '1.WT2', '1.WT3', '1.Pro']
 one_day_categories = ['1.2', '1.1', '1.HC', '1.WT1', '1.WT2', '1.WT3', '1.Pro']
 championships_categories = ['CN', 'CCRR', 'CCTT', 'CCU', 'CCUT', 'WCRR', 'WCTT', 'WCU', 'WCUT']
@@ -100,6 +148,7 @@ U23_categories = ['1.2U', '2.2U', '1.NC', '2.NC']
 
 classifications = {'general': 1, 'youth': 2, 'points': 3, 'mountain': 4, 'sprint': 6}
 Classification = Enum('Classification', classifications)
+""" Enum mapping classification names to numbers. """
 
 profile_icon_map = {'Bakketempo.png': 'Mountain ITT',
 			'Fjell-MF.png': 'Mountain MTF',
@@ -111,8 +160,10 @@ profile_icon_map = {'Bakketempo.png': 'Mountain ITT',
 			'Brosten.png': 'Cobbles',
 			'Lagtempo.png': 'TTT'} # TODO Any more?
 Profile = Enum('Profile', profile_icon_map)
+""" Enum mapping profile icon file names to profile types. """
 
 class Country(Enum):
+	""" Enum mapping three-letter country flag codes to country names. """
 	ALB = "Albania"
 	ALG = "Algeria"
 	AND = "Andorra"

@@ -1,0 +1,12 @@
+First Cycling API
+=================
+
+.. automodule:: first_cycling_api
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

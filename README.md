@@ -53,7 +53,9 @@ The following endpoint pages are currently mapped by the API:
 - Race pages (starting with https://firstcycling.com/race.php?r=)
 - Ranking pages (starting with https://firstcycling.com/ranking.php?)
 
-See the list of endpoints in the respective files.
+### ReadTheDocs
+
+See the full documentation at https://firstcyclingapi.readthedocs.io/en/latest/.
 
 ## Contributing
 Contributions are welcome! Please feel free to open issues, pull requests, and/or discussions.

@@ -1,8 +1,16 @@
+"""
+Race
+=========
+
+Provides a framework to load and store data on races and race editions.
+
+"""
+
 from .utilities import *
 
 # Race Endpoints ----
-class RaceEndpoint(Endpoint):
-	base_url = 'https://firstcycling.com/race.php'
+class _RaceEndpoint(Endpoint):
+	_base_url = 'https://firstcycling.com/race.php'
 
 	def _get_header_details(self):
 		soup = bs4.BeautifulSoup(self.response, 'html.parser')
@@ -17,36 +25,73 @@ class RaceEndpoint(Endpoint):
 		soup = bs4.BeautifulSoup(self.response, 'html.parser')
 		return [int(o['value']) for o in soup.find('select', {'name': 'y'}).find_all('option') if o['value']]
 
-class RaceOverview(RaceEndpoint):
-	params = {'k': 0}
+class RaceOverview(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 0}
 
-class RaceYearByYear(RaceEndpoint):
-	params = {'k': 'X', 'j': 0}
+class RaceYearByYear(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 'X', 'j': 0}
 
-class RaceVictoryTable(ParsedEndpoint, RaceEndpoint):
-	params = {'k': 'W'}
+class RaceVictoryTable(ParsedEndpoint, _RaceEndpoint):
+	"""
+	An endpoint for a race's victory table. Extends ParsedEndpoint.
 
-	def parse_soup(self):
+	Attributes
+	----------
+	table : pd.DataFrame
+		A DataFrame containing the victory table.
+	"""
+	_params = {'k': 'W'}
+
+	def _parse_soup(self):
 		self._get_victory_table()
 
 	def _get_victory_table(self):
 		victory_table = self.soup.find('table', {'class': 'tablesorter'})
 		self.table = parse_table(victory_table)
 
-class RaceStageVictories(RaceEndpoint):
-	params = {'k': 'Z'}
+class RaceStageVictories(ParsedEndpoint, _RaceEndpoint):
+	"""
+	An endpoint for a race's stage victories table. Extends ParsedEndpoint.
 
-class RaceYoungestOldestWinners(RaceEndpoint):
-	params = {'k': 'Y'}
+	Attributes
+	----------
+	table : pd.DataFrame
+		A DataFrame containing the victory table.
+	"""
+	_params = {'k': 'Z'}
+
+	def _parse_soup(self):
+		self._get_stage_victory_table()
+
+	def _get_stage_victory_table(self):
+		victory_table = self.soup.find('table', {'class': 'test tablesorter'}) # TODO test
+		self.table = parse_table(victory_table)
+
+class RaceYoungestOldestWinners(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 'Y'}
 
 # Race Edition Endpoints ----
-class RaceEditionInformation(RaceEndpoint):
-	params = {'k': 2}
+class RaceEditionInformation(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 2}
 
-class RaceEditionResults(ParsedEndpoint, RaceEndpoint):
-	params = {'l': None, 'e': None}
+class RaceEditionResults(ParsedEndpoint, _RaceEndpoint):
+	"""
+	An endpoint for a race edition's results. Extends ParsedEndpoint.
 
-	def parse_soup(self):
+	Attributes
+	----------
+	results_table : pd.DataFrame
+		A DataFrame containing the victory table.
+	standings : dict {str : pd.DataFrame}
+		For stage races, maps classification names to a DataFrame with the appropriate standings after the stage.
+	"""
+	_params = {'l': None, 'e': None}
+
+	def _parse_soup(self):
 		self._get_results_table()
 		self._get_sidebar_information()
 
@@ -60,25 +105,53 @@ class RaceEditionResults(ParsedEndpoint, RaceEndpoint):
 		divs = self.soup.find_all('div', {'class': "tab-content dummy"})
 		self.standings = {div['id']: parse_table(div.table) for div in divs}
 
-	def _get_sidebar_information(self):
+	def _get_sidebar_information(self): # TODO
 		return
 
-class RaceEditionStageProfiles(RaceEndpoint):
-	params = {'e': 'all'}
+class RaceEditionStageProfiles(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'e': 'all'}
 
-class RaceEditionStartlistNormal(RaceEndpoint):
-	params = {'k': 8}
+class RaceEditionStartlistNormal(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 8}
 
-class RaceEditionStartlistExtended(RaceEndpoint):
-	params = {'k': 9}
+class RaceEditionStartlistExtended(_RaceEndpoint):
+	""" Extends Endpoint. """
+	_params = {'k': 9}
 
 # Race ----
 class Race(FirstCyclingObject):
+	"""
+	A wrapper class to load and store information on races.
+
+	Attributes
+	----------
+	ID : int
+		The firstcycling.com ID for the race, as seen in the URL of the race page.
+	header_details : dict
+		A dictionary listing information from the header of race pages.
+	edition_years : list of int
+		A list of the years in which race editions took place.
+	editions : dict {int: RaceEdition}
+		The race editions for each year.
+	overview : dict {int: RaceOverview}
+		The race editions for each year.
+	"""
+
 	def __init__(self, race_id):
+		""" Initialize a Race.
+
+		Parameters
+		----------
+		race_id : int
+			The firstycling.com ID for the rider (can be found in the URL for their profile page)
+		"""
 		self.ID = race_id
 		self.header_details = None
 		self.edition_years = None
 		self.editions = {}
+		self.overview = {}
 
 	def _get_general_info(self, endpoint):
 		if not self.header_details:
@@ -89,21 +162,100 @@ class Race(FirstCyclingObject):
 		kwargs['r'] = self.ID
 		return kwargs
 
-	def get_overview(self, classifications=[0]):
-		for classification_num in classifications:
-			self._get_endpoint(RaceOverview, 'overview', classification_num, k=classification_num)
+	def get_overviews(self, classifications=[0]):
+		"""
+		Get race overview for given classifications.
 
-	def get_year_by_year(self, classifications=[0]):
-		for classification_num in classifications:
-			self._get_endpoint(RaceYearByYear, 'year_by_year', classification_num, j=classification_num)
+		Parameters
+		----------
+		classifications : list of int, default [0]
+			List of classifications for which to collect information.
+			See utilities.Classifications for possible numbers.
+
+		Returns
+		-------
+		results : dict {int: RaceOverview}
+			Overviews for selected classifications.
+		"""
+		return {c: self.get_overview(c) for c in classifications}
+
+	def get_overview(self, classification):
+		"""
+		Get race overview for given classifications.
+
+		Parameters
+		----------
+		classification : int
+			Classification for which to collect information.
+			See utilities.Classifications for possible inputs.
+
+		Returns
+		-------
+		RaceOverview
+		"""
+		return self._get_endpoint(RaceOverview, 'overview', classification, k=classification)
+
+	def get_year_by_years(self, classifications=[0]):
+		"""
+		Get year-by-year race statistics for given classifications.
+
+		Parameters
+		----------
+		classifications : list of int, default [0]
+			List of classifications for which to collect information.
+			See utilities.Classifications for possible numbers.
+
+		Returns
+		-------
+		results : dict {int: RaceOverview}
+			Overviews for selected classifications.
+		"""
+		return {c: self.get_year_by_year(c) for c in classifications}
+
+	def get_year_by_year(self, classification):
+		"""
+		Get year-by-year race statistics for given classification.
+
+		Parameters
+		----------
+		classification : int
+			Classification for which to collect information.
+			See utilities.Classifications for possible inputs.
+
+		Returns
+		-------
+		RaceOverview
+		"""
+		return self._get_endpoint(RaceYearByYear, 'year_by_year', classification, j=classification)
 
 	def get_victory_table(self):
+		"""
+		Get race all-time victory table.
+
+		Returns
+		-------
+		RaceVictoryTable
+		"""
 		return self._get_endpoint(RaceVictoryTable, 'victory_table')
 
 	def get_stage_victories(self):
+		"""
+		Get race all-time stage victories.
+
+		Returns
+		-------
+		RaceStageVictories
+		"""
 		return self._get_endpoint(RaceStageVictories, 'stage_victories')
 
 	def get_youngest_oldest_winners(self):
+		"""
+		Get race all-time victory table.
+
+		Returns
+		-------
+		RaceYoungestOldestWinners
+		"""
 		return self._get_endpoint(RaceYoungestOldestWinners, 'youngest_oldest_winners')
 
 	def _get_edition_endpoint(self, year, method, **kwargs):
@@ -113,18 +265,84 @@ class Race(FirstCyclingObject):
 		return method(self.editions[year], **kwargs)
 
 	def get_edition_information(self, year):
+		"""
+		Get race edition information.
+
+		Parameters
+		----------
+		year : int
+			Year for which to obtain edition information.
+
+		Returns
+		-------
+		RaceEditionInformation
+		"""
 		return self._get_edition_endpoint(year, RaceEdition.get_information)
 
-	def get_edition_results(self, year, classification_num=None, stage_num=None): # Also update information from right sidebar if missing
+	def get_edition_results(self, year, classification_num=None, stage_num=None):
+		"""
+		Get race edition results for given classification or stage.
+
+		Parameters
+		----------
+		year : int
+			Year for which to obtain edition information.
+		classification_num : int
+			Classification for which to collect information.
+			See utilities.Classifications for possible inputs.
+		stage_num : int
+			Stage number for which to collect results, if applicable.
+			Input 0 for prologue.
+
+		Returns
+		-------
+		RaceEditionResults
+		"""
 		return self._get_edition_endpoint(year, RaceEdition.get_results, classification_num=classification_num, stage_num=stage_num)
 
 	def get_edition_stage_profiles(self, year):
+		"""
+		Get race edition stage profiles.
+
+		Parameters
+		----------
+		year : int
+			Year for which to obtain edition information.
+
+		Returns
+		-------
+		RaceEditionStageProfiles
+		"""
 		return self._get_edition_endpoint(year, RaceEdition.get_stage_profiles)
 
 	def get_edition_startlist_normal(self, year):
+		"""
+		Get race edition startlist in normal mode.
+
+		Parameters
+		----------
+		year : int
+			Year for which to obtain edition information.
+
+		Returns
+		-------
+		RaceEditionStartlistNormal
+		"""
 		return self._get_edition_endpoint(year, RaceEdition.get_startlist_normal)
 
 	def get_edition_startlist_extended(self, year):
+		"""
+		Get race edition startlist in extended mode.
+
+		Parameters
+		----------
+		year : int
+			Year for which to obtain edition information.
+
+		Returns
+		-------
+		RaceEditionStartlistExtended
+		"""
 		return self._get_edition_endpoint(year, RaceEdition.get_startlist_extended)
 
 
@@ -142,9 +360,9 @@ class RaceEdition(FirstCyclingObject):
 	def get_information(self):
 		return self._get_endpoint(RaceEditionInformation, 'information')
 
-	def get_results(self, classification_num=None, stage_num=None): # Also update information from right sidebar if missing
+	def get_results(self, classification_num=None, stage_num=None): 
 		key = 'results' + ('_' + classifications[classification_num] if classification_num else ('_stage_' + str(stage_num) if stage_num else ''))
-		return self._get_endpoint(RaceEditionResults, key, l=classification_num, e=stage_num)
+		return self._get_endpoint(RaceEditionResults, key, l=classification_num, e=stage_num) # TODO update sidebar information if missing
 
 	def get_stage_profiles(self):
 		self._get_endpoint(RaceEditionStageProfiles, 'stage_profiles')
