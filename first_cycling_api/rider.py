@@ -1,8 +1,16 @@
+"""
+Rider
+=========
+
+Provides a framework to load and store data on riders.
+
+"""
+
 from .utilities import *
 
 # Endpoints ----
-class RiderEndpoint(Endpoint):
-	base_url = 'https://firstcycling.com/rider.php'
+class _RiderEndpoint(Endpoint):
+	_base_url = 'https://firstcycling.com/rider.php'
 
 	def _get_years_active(self):
 		soup = bs4.BeautifulSoup(self.response, 'html.parser')
@@ -44,10 +52,20 @@ class RiderEndpoint(Endpoint):
 
 		return sidebar_details
 
-class RiderYearResults(ParsedEndpoint, RiderEndpoint):
-	params = {'y': current_year}
+class RiderYearResults(ParsedEndpoint, _RiderEndpoint):
+	"""
+	An endpoint for rider's results in a certain year. Extends ParsedEndpoint.
 
-	def parse_soup(self):
+	Attributes
+	----------
+	year_details : dict
+		The year-specific rider details from the page.
+	results_df : pd.DataFrame
+		A DataFrame containing the rider's results from the year.
+	"""
+	_params = {'y': current_year}
+
+	def _parse_soup(self):
 		self._get_year_details()
 		self._get_year_results()
 
@@ -78,37 +96,72 @@ class RiderYearResults(ParsedEndpoint, RiderEndpoint):
 		table = self.soup.find('table', {'class': "sortTabell tablesorter"})
 		self.results_df = parse_table(table)
 
-class RiderBestResults(RiderEndpoint):
-	params = {'high': 1}
+class RiderBestResults(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'high': 1}
 
-class RiderVictories(RiderEndpoint):
-	params = {'high': 1, 'k': 1, 'uci': 0}
+class RiderVictories(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'high': 1, 'k': 1, 'uci': 0}
 
-class RiderMonumentResults(RiderEndpoint):
-	params = {'high': 1, 'k': 3}
+class RiderMonumentResults(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'high': 1, 'k': 3}
 
-class RiderRaceHistory(RiderEndpoint):
-	params = {'ra': None}
+class RiderRaceHistory(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'ra': None}
 
-class RiderTeamAndRanking(RiderEndpoint):
-	params = {'stats': 1}
+class RiderTeamAndRanking(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'stats': 1}
 
-class RiderRaceHistory(RiderEndpoint):
-	params = {'stats': 1, 'k': 1}
+class RiderRaceHistory(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'stats': 1, 'k': 1}
 
-class RiderOneDayRaces(RiderEndpoint):
-	params = {'stats': 1, 'k': 2}
+class RiderOneDayRaces(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'stats': 1, 'k': 2}
 
-class RiderStageRaces(RiderEndpoint):
-	params = {'stats': 1, 'k': 3}
+class RiderStageRaces(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'stats': 1, 'k': 3}
 
-class RiderTeams(RiderEndpoint):
-	params = {'teams': 1}
+class RiderTeams(_RiderEndpoint):
+	""" Extends Endpoint. """
+	_params = {'teams': 1}
 
 
 # Rider ----
 class Rider(FirstCyclingObject):
+	"""
+	A wrapper class to load and store information on riders.
+
+	Attributes
+	----------
+	ID : int
+		The firstycling.com ID for the rider (can be found in the URL for their profile page).
+	header_details : dict
+		A dictionary listing information from the header of rider profile pages.
+	sidebar_details : pd.Series
+		A series listing information from the right sidebar of rider profile pages.
+	years_active : list of int
+		A list of the years in which the rider was active.
+	results : dict {int: RiderYearResults}
+		The rider's results for each year.
+	race_history : dict {int: RiderRaceHistory}
+		The rider's history at the race with the given ID.
+	"""
+
 	def __init__(self, rider_id):
+		""" Initialize a Rider.
+
+		Parameters
+		----------
+		rider_id : int
+			The firstycling.com ID for the rider (can be found in the URL for their profile page)
+		"""
 		self.ID = rider_id
 		self.header_details = None
 		self.sidebar_details = None
@@ -127,52 +180,139 @@ class Rider(FirstCyclingObject):
 		return kwargs
 
 	def get_years(self, years=None):
+		"""
+		Get rider details and results for given years.
+
+		Parameters
+		----------
+		years : list of int
+			List of years for which to collect information.
+			If None, collects information for all years in which rider was active.
+
+		Returns
+		-------
+		results : dict {int: RiderYearResults}
+			Results for selected years.
+		"""
 		if years is None:
 			if not self.years_active: # Get first unloaded year
 				self.get_year()
 			years = [year for year in self.years_active if year not in self.results]
-		for year in years:
-			self.get_year(year)
+		return {y: self.get_year(year) for y in years}
 
 	def get_year(self, year=None):
-		""" If None, loads most recent unloaded year. """
+		"""
+		Get rider details and results for given year.
+
+		Parameters
+		----------
+		year : int
+			Year for which to collect information.
+			If None, collects information for latest unloaded year in which rider was active,
+			or if all years already loaded returns latest year.
+
+		Returns
+		-------
+		RiderYearResults
+		"""
 		if year:
 			return self._get_endpoint(RiderYearResults, 'results', year, y=year)
-		elif self.years_active: # Get first unloaded year
-			year = [year for year in self.years_active if year not in self.results][0]
-			return self._get_endpoint(RiderYearResults, 'results', year, y=year)
-		else:
+		elif self.years_active:
+			unloaded_years = [year for year in self.years_active if year not in self.results]
+			if unloaded_years: # Load first unloaded year
+				year = unloaded_years[0]
+				return self._get_endpoint(RiderYearResults, 'results', year, y=year)
+			else: # Load most recent year
+				return self.results[max(self.years_active)]
+		else: # Determine year after request
 			year_results = RiderYearResults(self.ID)
 			self.results[year_results.year] = year_results
 			self._get_general_info(year_results)
 			return year_results
 
 	def get_best_results(self):
+		""" Get the rider's best results.
+
+		Returns
+		-------
+		RiderBestResults
+		"""
 		return self._get_endpoint(RiderBestResults, 'best_results')
 
 	def get_victories(self):
+		""" Get the rider's victories. 
+
+		Returns
+		-------
+		RiderVictories
+		"""
 		return self._get_endpoint(RiderVictories, 'victories')
 
 	def get_uci_victories(self):
+		""" Get the rider's UCI victories. 
+
+		Returns
+		-------
+		RiderVictories
+		"""
 		return self._get_endpoint(RiderVictories, 'uci_victories', uci=1)
 
 	def get_monument_results(self):
+		""" Get the rider's results in monuments. 
+
+		Returns
+		-------
+		RiderMonumentResults
+		"""
 		return self._get_endpoint(RiderMonumentResults, 'monument_results')
 
 	def get_race_history(self, race_id):
+		"""
+		Get the rider's history at a certain race.
+
+		Parameters
+		----------
+		race_id : int
+			The firstcycling.com ID for the desired race, from the race profile URL.
+
+		Returns
+		-------
+		RiderRaceHistory
+		"""
 		return self._get_endpoint(RiderRaceHistory, 'race_history', race_id, ra=race_id)
 
 	def get_team_and_ranking(self):
+		""" Get the rider's historical teams and rankings. 
+
+		Returns
+		-------
+		RiderTeamAndRanking
+		"""
 		return self._get_endpoint(RiderTeamAndRanking, 'team_and_ranking')
 
-	def get_race_history(self):
-		return self._get_endpoint(RiderRaceHistory, 'race_history')
-
 	def get_one_day_races(self):
+		""" Get the rider's results at major one-day races. 
+
+		Returns
+		-------
+		RiderOneDayRaces
+		"""
 		return self._get_endpoint(RiderOneDayRaces, 'one_day_races')
 
 	def get_stage_races(self):
+		""" Get the rider's results at major stage races. 
+
+		Returns
+		-------
+		RiderStageRaces
+		"""
 		return self._get_endpoint(RiderStageRaces, 'stage_races')
 
 	def get_teams(self):
+		""" Get the rider's historical teams. 
+
+		Returns
+		-------
+		RiderTeams
+		"""
 		return self._get_endpoint(RiderTeams, 'teams')
